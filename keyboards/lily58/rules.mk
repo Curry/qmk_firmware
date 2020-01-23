@@ -11,6 +11,14 @@ MCU = atmega32u4
 #   ATmega328P   USBasp
 BOOTLOADER = caterina
 
+# Interrupt driven control endpoint task(+60)
+OPT_DEFS += -DINTERRUPT_CONTROL_ENDPOINT
+
+# Use split_common libraries
+SPLIT_KEYBOARD = yes
+
+DEFAULT_FOLDER = lily58/rev1
+
 # Build Options
 #   change to "no" to disable the options, or define them in the Makefile in
 #   the appropriate keymap folder that will get included automatically
@@ -29,17 +37,7 @@ BLUETOOTH_ENABLE = no       # Enable Bluetooth with the Adafruit EZ-Key HID
 RGBLIGHT_ENABLE = no       # Enable WS2812 RGB underlight.
 # Do not enable SLEEP_LED_ENABLE. it uses the same timer as BACKLIGHT_ENABLE
 SLEEP_LED_ENABLE = no    # Breathing sleep LED during USB suspend
-
-CUSTOM_MATRIX = yes
-
-SRC += i2c.c
-SRC += serial.c
-SRC += ssd1306.c
-
-# A workaround until #7089 is merged.
-#   serial.c must not be compiled with the -lto option.
-#   The current LIB_SRC has a side effect with the -fno-lto option, so use it.
-LIB_SRC += serial.c
+OLED_DRIVER_ENABLE=yes      # OLED display
 
 # if firmware size over limit, try this option
 # CFLAGS += -flto
