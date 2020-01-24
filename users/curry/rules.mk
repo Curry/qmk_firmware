@@ -2,14 +2,17 @@ SRC += curry.c \
        process_records.c
 
 # Common flags
+BOOTMAGIC_ENABLE        = lite
+MOUSEKEY_ENABLE         = no
+CONSOLE_ENABLE          = no
+COMMAND_ENABLE          = no
 SPACE_CADET_ENABLE      = no
 LTO_ENABLE              = yes
 EXTRAKEY_ENABLE         = yes
 UNICODE_ENABLE          = yes
 NKRO_ENABLE             = yes
-EXTRAKEY_ENABLE         = yes
 LEADER_ENABLE           = yes
-TAP_DANCE_ENABLE        = no
+TAP_DANCE_ENABLE        = yes
 
 ifneq ($(strip $(NO_SECRETS)), yes)
     ifneq ("$(wildcard $(USER_PATH)/secrets.c)","")
@@ -30,6 +33,10 @@ endif
 
 ifeq ($(strip $(LEADER_ENABLE)), yes)
     SRC += leader.c
+endif
+
+ifeq ($(strip $(ENCODER_ENABLE)), yes)
+    SRC += encoder.c
 endif
 
 ifeq ($(strip $(RGBLIGHT_ENABLE)), yes)

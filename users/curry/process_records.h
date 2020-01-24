@@ -19,10 +19,6 @@ enum userspace_custom_keycodes {
     UC_TABL,            // ┬─┬ノ( º _ ºノ)
     UC_SHRG,            // ¯\_(ツ)_/¯
     UC_DISA,            // ಠ_ಠ
-    KC_DT1,
-    KC_DT2,
-    KC_DT3,
-    KC_DT4,
     NEW_SAFE_RANGE  // use "NEWPLACEHOLDER for keymap specific codes
 };
 
@@ -51,14 +47,15 @@ bool process_record_keymap(uint16_t keycode, keyrecord_t *record);
 
 #if defined(SWAP_HANDS_ENABLE)
 #    define KC_C1R3 SH_T(KC_TAB)
-#else  // SWAP_HANDS_ENABLE
+#else
 #    define KC_C1R3 KC_TAB
-#endif  // SWAP_HANDS_ENABLE
+#endif
 
+#define BK_LWER LT(_LOWER, KC_BSPC)
 #define SP_LWER LT(_LOWER, KC_SPC)
+#define DL_RAIS LT(_RAISE, KC_DEL)
 #define ET_RAIS LT(_RAISE, KC_ENTER)
 
-/* OSM keycodes, to keep things clean and easy to change */
 #define OS_LGUI OSM(MOD_LGUI)
 #define OS_RGUI OSM(MOD_RGUI)
 #define OS_LSFT OSM(MOD_LSFT)
@@ -78,9 +75,3 @@ bool process_record_keymap(uint16_t keycode, keyrecord_t *record);
 
 #define UC_IRNY UC(0x2E2E)
 #define UC_CLUE UC(0x203D)
-
-// KWin Window Switching
-#define KC_DT1 LCTL(KC_F1)
-#define KC_DT2 LCTL(KC_F2)
-#define KC_DT3 LCTL(KC_F3)
-#define KC_DT4 LCTL(KC_F4)

@@ -1,6 +1,11 @@
 #include "curry.h"
 
-#define KEYLOGGER_LENGTH 5
+#ifdef OLED_DISPLAY_128X64
+#   define KEYLOGGER_LENGTH 10
+#else
+#   define KEYLOGGER_LENGTH 5
+#endif
+
 static uint32_t oled_timer                       = 0;
 static char     keylog_str[KEYLOGGER_LENGTH + 1] = {"\n"};
 static uint16_t log_timer                        = 0;
@@ -49,11 +54,33 @@ void add_keylog(uint16_t keycode) {
 }
 
 void render_keylogger_status(void) {
+#if defined(OLED_DISPLAY_128X64)
+    oled_write_P(PSTR("Keylogger: "), false);
+#else
     oled_write_P(PSTR("Keys:"), false);
+#endif
     oled_write(keylog_str, false);
 }
 
+
 void render_default_layer_state(void) {
+#if defined(OLED_DISPLAY_128X64)
+    oled_write_P(PSTR("Layout: "), false);
+    switch (get_highest_layer(default_layer_state)) {
+        case _QWERTY:
+            oled_write_ln_P(PSTR("Qwerty"), false);
+            break;
+        case _COLEMAK:
+            oled_write_ln_P(PSTR("Colemak"), false);
+            break;
+        case _DVORAK:
+            oled_write_ln_P(PSTR("Dvorak"), false);
+            break;
+        case _WORKMAN:
+            oled_write_ln_P(PSTR("Workman"), false);
+            break;
+    }
+#else
     oled_write_P(PSTR("Lyout"), false);
     switch (get_highest_layer(default_layer_state)) {
         case _QWERTY:
@@ -69,30 +96,62 @@ void render_default_layer_state(void) {
             oled_write_P(PSTR(" WRKM"), false);
             break;
     }
+#endif
 }
 
+
 void render_layer_state(void) {
+#if defined(OLED_DISPLAY_128X64)
+    oled_write_ln_P(PSTR("Layer:"), false);
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("Lower"), layer_state_is(_LOWER));
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("Raise"), layer_state_is(_RAISE));
+    oled_write_P(PSTR(" "), false);
+    oled_write_ln_P(PSTR("Mods"), layer_state_is(_MODS));
+#else
     oled_write_P(PSTR("LAYER"), false);
     oled_write_P(PSTR("Lower"), layer_state_is(_LOWER));
     oled_write_P(PSTR("Raise"), layer_state_is(_RAISE));
     oled_write_P(PSTR(" Mods"), layer_state_is(_MODS));
+#endif
 }
 
 void render_keylock_status(uint8_t led_usb_state) {
+#if defined(OLED_DISPLAY_128X64)
+    oled_write_P(PSTR("Lock: "), false);
+    oled_write_P(PSTR("NUML"), led_usb_state & (1 << USB_LED_NUM_LOCK));
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("CAPS"), led_usb_state & (1 << USB_LED_CAPS_LOCK));
+    oled_write_P(PSTR(" "), false);
+    oled_write_ln_P(PSTR("SCLK"), led_usb_state & (1 << USB_LED_SCROLL_LOCK));
+#else
     oled_write_P(PSTR("Lock:"), false);
     oled_write_P(PSTR(" "), false);
     oled_write_P(PSTR("N"), led_usb_state & (1 << USB_LED_NUM_LOCK));
     oled_write_P(PSTR("C"), led_usb_state & (1 << USB_LED_CAPS_LOCK));
     oled_write_ln_P(PSTR("S"), led_usb_state & (1 << USB_LED_SCROLL_LOCK));
+#endif
 }
 
 void render_mod_status(uint8_t modifiers) {
+#if defined(OLED_DISPLAY_128X64)
+    oled_write_P(PSTR("Mods: "), false);
+    oled_write_P(PSTR("Sft"), (modifiers & MOD_MASK_SHIFT));
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("Ctl"), (modifiers & MOD_MASK_CTRL));
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("Alt"), (modifiers & MOD_MASK_ALT));
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("GUI"), (modifiers & MOD_MASK_GUI));
+#else
     oled_write_P(PSTR("Mods:"), false);
     oled_write_P(PSTR(" "), false);
     oled_write_P(PSTR("S"), (modifiers & MOD_MASK_SHIFT));
     oled_write_P(PSTR("C"), (modifiers & MOD_MASK_CTRL));
     oled_write_P(PSTR("A"), (modifiers & MOD_MASK_ALT));
     oled_write_P(PSTR("G"), (modifiers & MOD_MASK_GUI));
+#endif
 }
 
 void render_bootmagic_status(void) {
@@ -101,6 +160,28 @@ void render_bootmagic_status(void) {
         {{0x97, 0x98, 0}, {0xb7, 0xb8, 0}},
         {{0x95, 0x96, 0}, {0xb5, 0xb6, 0}},
     };
+#if defined(OLED_DISPLAY_128X64)
+    oled_write_P(PSTR("Boot  "), false);
+    if (keymap_config.swap_lctl_lgui) {
+        oled_write_P(logo[1][0], false);
+    } else {
+        oled_write_P(logo[0][0], false);
+    }
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("NKRO"), keymap_config.nkro);
+    oled_write_P(PSTR(" "), false);
+    oled_write_ln_P(PSTR("GUI"), !keymap_config.no_gui);
+    oled_write_P(PSTR("Magic "), false);
+    if (keymap_config.swap_lctl_lgui) {
+        oled_write_P(logo[1][1], false);
+    } else {
+        oled_write_P(logo[0][1], false);
+    }
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("GRV"), keymap_config.swap_grave_esc);
+    oled_write_P(PSTR("  "), false);
+    oled_write_ln_P(PSTR("CAPS"), keymap_config.swap_control_capslock);
+#else
     oled_write_P(PSTR("BTMGK"), false);
     oled_write_P(PSTR(" "), false);
     oled_write_P(logo[0][0], !keymap_config.swap_lctl_lgui);
@@ -109,13 +190,33 @@ void render_bootmagic_status(void) {
     oled_write_P(logo[0][1], !keymap_config.swap_lctl_lgui);
     oled_write_P(logo[1][1], keymap_config.swap_lctl_lgui);
     oled_write_P(PSTR(" NKRO"), keymap_config.nkro);
+#endif
 }
 
 void render_user_status(void) {
+#if defined(OLED_DISPLAY_128X64)
+    oled_write_P(PSTR("USER: "), false);
+    oled_write_P(PSTR("Anim"), userspace_config.rgb_matrix_idle_anim);
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("Layr"), userspace_config.rgb_layer_change);
+    oled_write_P(PSTR(" "), false);
+    oled_write_ln_P(PSTR("Nuke"), userspace_config.nuke_switch);
+#else
     oled_write_P(PSTR("USER:"), false);
     oled_write_P(PSTR(" Anim"), userspace_config.rgb_matrix_idle_anim);
     oled_write_P(PSTR(" Layr"), userspace_config.rgb_layer_change);
     oled_write_P(PSTR(" Nuke"), userspace_config.nuke_switch);
+#endif
+}
+
+// clang-format off
+void render_logo(void) {
+    static const char PROGMEM qmk_logo[] = {
+        0x80,0x81,0x82,0x83,0x84,0x85,0x86,0x87,0x88,0x89,0x8a,0x8b,0x8c,0x8d,0x8e,0x8f,0x90,0x91,0x92,0x93,0x94,
+        0xa0,0xa1,0xa2,0xa3,0xa4,0xa5,0xa6,0xa7,0xa8,0xa9,0xaa,0xab,0xac,0xad,0xae,0xaf,0xb0,0xb1,0xb2,0xb3,0xb4,
+        0xc0,0xc1,0xc2,0xc3,0xc4,0xc5,0xc6,0xc7,0xc8,0xc9,0xca,0xcb,0xcc,0xcd,0xce,0xcf,0xd0,0xd1,0xd2,0xd3,0xd4,0};
+
+    oled_write_P(qmk_logo, false);
 }
 
 void render_status_main(void) {
@@ -130,6 +231,9 @@ void render_status_main(void) {
 
 void render_status_secondary(void) {
     /* Show Keyboard Layout  */
+#ifdef OLED_DISPLAY_128X64
+    render_logo();
+#endif
     render_default_layer_state();
     render_layer_state();
     render_mod_status(get_mods() | get_oneshot_mods());
