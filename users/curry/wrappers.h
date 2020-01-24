@@ -1,10 +1,6 @@
 #pragma once
 #include "curry.h"
-/*
-Since our quirky block definitions are basically a list of comma separated
-arguments, we need a wrapper in order for these definitions to be
-expanded before being used as arguments to the LAYOUT_xxx macro.
-*/
+
 #if (!defined(LAYOUT) && defined(KEYMAP))
 #    define LAYOUT KEYMAP
 #endif
@@ -63,7 +59,7 @@ expanded before being used as arguments to the LAYOUT_xxx macro.
 
 #define _________________LOWER_L1__________________         _________________FUNC_LEFT_________________
 #define _________________LOWER_L2__________________         _________________SYM_LEFT__________________
-#define _________________LOWER_L3__________________         KC_DT1,  KC_DT2,  KC_DT3,  KC_DT4,  KC_CCCV
+#define _________________LOWER_L3__________________         _______, _______, _______, _______, KC_CCCV
 
 #define _________________LOWER_R1__________________         _________________FUNC_RIGHT________________
 #define _________________LOWER_R2__________________         _________________SYM_RIGHT_________________

@@ -20,11 +20,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 uint8_t temp_osm = mod_config(get_oneshot_mods());
                 clear_mods();
                 clear_oneshot_mods();
-                send_string_with_delay_P(PSTR("make " QMK_KEYBOARD ":" QMK_KEYMAP), TAP_CODE_DELAY);
+                send_string_with_delay_P(PSTR("qmk "), TAP_CODE_DELAY);
                 if ((temp_mod | temp_osm) & MOD_MASK_SHIFT) {
-                    send_string_with_delay_P(PSTR(":flash"), TAP_CODE_DELAY);
+                    send_string_with_delay_P(PSTR("flash "), TAP_CODE_DELAY);
+                } else {
+                    send_string_with_delay_P(PSTR("compile "), TAP_CODE_DELAY);
                 }
-                send_string_with_delay_P(PSTR(" -j8 --output-sync\n"), TAP_CODE_DELAY);
+                send_string_with_delay_P(PSTR("-kb " QMK_KEYBOARD " -km " QMK_KEYMAP "\n"), TAP_CODE_DELAY);
             }
             break;
 
