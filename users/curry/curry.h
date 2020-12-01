@@ -18,6 +18,10 @@
 #   include "rgb_lighting_user.h"
 #endif
 
+#if defined(OLED_DRIVER_ENABLE)
+#    include "oled.h"
+#endif
+
 #if defined(KEYBOARD_lily58_rev1) & defined(PROTOCOL_LUFA)
 #    include "lufa.h"
 #    include "split_util.h"

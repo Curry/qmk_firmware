@@ -12,7 +12,7 @@ EXTRAKEY_ENABLE         = yes
 UNICODE_ENABLE          = yes
 NKRO_ENABLE             = yes
 LEADER_ENABLE           = yes
-TAP_DANCE_ENABLE        = yes
+TAP_DANCE_ENABLE        = no
 
 ifneq ($(strip $(NO_SECRETS)), yes)
     ifneq ("$(wildcard $(USER_PATH)/secrets.c)","")

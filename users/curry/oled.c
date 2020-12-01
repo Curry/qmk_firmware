@@ -242,18 +242,13 @@ void render_status_secondary(void) {
 }
 
 void oled_task_user(void) {
-    if (timer_elapsed32(oled_timer) > 30000) {
-        oled_off();
-        return;
-    }
-#if !defined(SPLIT_KEYBOARD)
-    else {
-        oled_on();
-    }
-#endif
     if (is_keyboard_master()) {
-        render_status_main();  // Renders the current keyboard state (layer, lock, caps, scroll, etc)
-    } else {
+        if (timer_elapsed32(oled_timer) > 30000) {
+            oled_off();
+        } else {
+            render_status_main();
+        }
+    } else if (is_oled_on()) {
         render_status_secondary();
     }
 }

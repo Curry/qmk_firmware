@@ -2,8 +2,6 @@
 
 userspace_config_t userspace_config;
 
-#define CURRY_UNICODE_MODE 1
-
 void bootmagic_lite(void) {
     matrix_scan();
 #if defined(DEBOUNCING_DELAY) && DEBOUNCING_DELAY > 0
@@ -31,10 +29,6 @@ __attribute__((weak)) void matrix_init_keymap(void) {}
 // Call user matrix init, set default RGB colors and then
 // call the keymap's init function
 void matrix_init_user(void) {
-#if (defined(UNICODE_ENABLE) || defined(UNICODEMAP_ENABLE) || defined(UCIS_ENABLE))
-    set_unicode_input_mode(CURRY_UNICODE_MODE);
-    get_unicode_input_mode();
-#endif  // UNICODE_ENABLE
     matrix_init_keymap();
 }
 
@@ -119,12 +113,6 @@ void eeconfig_init_user(void) {
     userspace_config.raw              = 0;
     userspace_config.rgb_layer_change = true;
     eeconfig_update_user(userspace_config.raw);
-#if (defined(UNICODE_ENABLE) || defined(UNICODEMAP_ENABLE) || defined(UCIS_ENABLE))
-    set_unicode_input_mode(CURRY_UNICODE_MODE);
-    get_unicode_input_mode();
-#else
-    eeprom_update_byte(EECONFIG_UNICODEMODE, CURRY_UNICODE_MODE);
-#endif
     eeconfig_init_keymap();
     keyboard_init();
 }
